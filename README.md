@@ -1,6 +1,6 @@
 # remotePolicyRemover
 
-Remove policies created with Jamf (Casper) Remote
+Remove policies created with Jamf (Casper) Remote.
 
 Download: [Remote Policy Remover](https://github.com/BIG-RAT/remotePolicyRemover/releases/download/current/remotePolicyRemover)
 
