@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController, URLSessionDelegate {
+class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate {
 
     @IBOutlet weak var jamfServer_TextField: NSTextField!
     @IBOutlet weak var username_TextField: NSTextField!
@@ -40,6 +40,8 @@ class ViewController: NSViewController, URLSessionDelegate {
     var remotePolicyList  = [String]()
     var remotePolicyCount:Int16 = 0
     var httpStatusCode: Int = 0
+    
+    let userDefaults = UserDefaults.standard
     
     @IBAction func fetch_Button(_ sender: Any) {
         remotePolicyCount = 0
@@ -88,15 +90,33 @@ class ViewController: NSViewController, URLSessionDelegate {
             }
         }   // for (id, epoch) - end
     }
+    
+    func controlTextDidEndEditing(_ obj: Notification) {
+        if let textField = obj.object as? NSTextField {
+            switch textField.tag {
+            case 0:
+                userDefaults.set(jamfServer_TextField.stringValue, forKey: "jamfServer")
+            case 1:
+                userDefaults.set(username_TextField.stringValue, forKey: "username")
+            default:
+                break
+            }
+        }
+    }
     @IBAction func quit_Button(_ sender: Any) {
         NSApplication.shared.terminate(self)
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        jamfServer_TextField.stringValue  = userDefaults.string(forKey: "jamfServer") ?? "https://<server>.jamfcloud.com"
+        username_TextField.stringValue    = userDefaults.string(forKey: "username") ?? ""
+        
+        // configure TextField so that we can monitor when editing is done
+        self.jamfServer_TextField.delegate = self
+        self.username_TextField.delegate   = self
     }
 
     override var representedObject: Any? {
@@ -104,9 +124,7 @@ class ViewController: NSViewController, URLSessionDelegate {
         // Update the view, if already loaded.
         }
     }
-    
-//    let jamfServer = "https://m.hickoryhillseast.net"
-    
+        
     func getEndpoints(endpoint: String, completion: @escaping (_ result: String) -> Void) {
         print("Getting \(endpoint)")
         theOpQ.maxConcurrentOperationCount = 1
@@ -131,7 +149,7 @@ class ViewController: NSViewController, URLSessionDelegate {
 
                     let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments)
                         if let endpointJSON = json as? [String: Any] {
-                            print("endpointJSON: \(endpointJSON))")
+//                            print("endpointJSON: \(endpointJSON))")
                             print("\n-------- Getting all \(endpoint) --------")
 
                                 print("processing policies")
@@ -148,8 +166,8 @@ class ViewController: NSViewController, URLSessionDelegate {
                                             self.remotePolicyList.append(xmlName)
 //                                            let regexSearch = try! NSRegularExpression(pattern: "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] at", options:.caseInsensitive)
                                             
-                                            if let range = xmlName.range(of:"[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] at", options: .regularExpression) {
-                                                let result = xmlName.substring(with:range)
+                                            if let _ = xmlName.range(of:"[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] at", options: .regularExpression) {
+//                                                let result = xmlName.substring(with:range)
 //                                                print("\tresult: \(xmlName)")
                                                 self.remotePolicyCount += 1
                                                 DispatchQueue.main.async {
@@ -226,9 +244,6 @@ class ViewController: NSViewController, URLSessionDelegate {
             
             theOpQ.addOperation {
                 
-//                print("[RemoveEndpoints] removing \(endpointType) with ID \(policyId)  -  Object \(currentPolicy) of \(policyCount)\n")
-//                print("\n[RemoveEndpoints] removal URL: \(removeDestUrl)\n")
-                
                 let encodedURL = NSURL(string: removeDestUrl)
                 let request = NSMutableURLRequest(url: encodedURL! as URL)
                 request.httpMethod = "DELETE"
@@ -257,24 +272,13 @@ class ViewController: NSViewController, URLSessionDelegate {
                         } else {
                             print("[RemoveEndpoints] **** Failed to remove: \(policyName)\n")
 
-//                            if self.debug { self.writeToLog(stringOfText: "\n\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] ---------- endpoint info ----------\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] Type: \(endpointType)\t Name: \(policyName)\t ID: \(policyId)\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] ---------- status code ----------\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] \(httpResponse.statusCode)\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] ---------- response ----------\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] \(httpResponse)\n") }
-//                            if self.debug { self.writeToLog(stringOfText: "[RemoveEndpoints] ---------- response ----------\n\n") }
                         }   // if httpResponse.statusCode - end
                     }   // if let httpResponse - end
 
                         
                     if currentPolicy == policyCount {
                         self.spinner.stopAnimation(self)
-                        // check for file that allows deleting data from destination server, delete if found - start
-//                            self.rmDELETE()
-                        // check for file that allows deleting data from destination server, delete if found - end
-                        //self.go_button.isEnabled = true
+
                     }
                     semaphore.signal()
                 })  // let task = session.dataTask - end
@@ -282,11 +286,7 @@ class ViewController: NSViewController, URLSessionDelegate {
                 semaphore.wait()
             }   // theOpQ.addOperation - end
         }
-        if currentPolicy == policyCount {
-//            nodesMigrated+=1    // ;print("added node: \(localEndPointType) - removeEndpoints")
-            //            print("remove nodes complete: \(nodesMigrated)")
-        }
-    }   // func removeEndpoints - end
+    }   // func RemoveRemotePolicies - end
     
     func toEpochTime(dateString: String) -> Double {
 //        var myDate = ""
