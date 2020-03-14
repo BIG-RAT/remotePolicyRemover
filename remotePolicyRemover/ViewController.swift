@@ -47,7 +47,10 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
         remotePolicyCount = 0
         policyIdNamdDict.removeAll()
         remotePolicyCount_TextField.stringValue = ""
-        oldestPolicy_TextField.stringValue = ""
+        oldestPolicy_TextField.stringValue      = ""
+        oldestRemotePolicyString                = ""
+        cutoffDate_TextField.stringValue        = ""
+        oldestRemotePolicyEpoch                 = NSDate().timeIntervalSince1970
         
         username = self.username_TextField.stringValue
         password = self.password_TextFiled.stringValue
@@ -195,20 +198,18 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
                     } else {
                         // something went wrong
                         //self.writeToHistory(stringOfText: "**** \(self.getName(endpoint: endpointType, objectXML: endPointXML)) - Failed\n")
-                        print("\n\n---------- status code ----------")
-                        print(httpResponse.statusCode)
-                        self.httpStatusCode = httpResponse.statusCode
-                        print("---------- status code ----------")
-                        print("\n\n---------- response ----------")
-                        print(httpResponse)
-                        print("---------- response ----------\n\n")
+//                        print("\n\n---------- status code ----------")
+//                        print(httpResponse.statusCode)
+//                        self.httpStatusCode = httpResponse.statusCode
+//                        print("---------- status code ----------")
+//                        print("\n\n---------- response ----------")
+//                        print(httpResponse)
+//                        print("---------- response ----------\n\n")
                         switch self.httpStatusCode {
                         case 401:
-                            print("401")
-                        //self.alert_dialog(header: "Authentication Failure", message: "Please verify username and password for the source server.")
+                            Alert().display(header: "Authentication Failure", message: "Please verify username and password for the server.")
                         default:
-                            print("default")
-                            //self.alert_dialog(header: "Error", message: "An unknown error occured trying to query the source server.")
+                            Alert().display(header: "Error", message: "The following error was returned: \(self.httpStatusCode).")
                         }
                         
                         //                        401 - wrong username and/or password

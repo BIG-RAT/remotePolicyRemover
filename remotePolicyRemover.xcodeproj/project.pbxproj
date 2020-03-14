@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B530AE2C241D366600C0457B /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B530AE2B241D366600C0457B /* Alert.swift */; };
 		B5E1913D21B2308300A1A9CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E1913C21B2308300A1A9CA /* AppDelegate.swift */; };
 		B5E1913F21B2308300A1A9CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E1913E21B2308300A1A9CA /* ViewController.swift */; };
 		B5E1914121B2308700A1A9CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5E1914021B2308700A1A9CA /* Assets.xcassets */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B530AE2B241D366600C0457B /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		B5E1913921B2308300A1A9CA /* remotePolicyRemover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = remotePolicyRemover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5E1913C21B2308300A1A9CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B5E1913E21B2308300A1A9CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 		B5E1913B21B2308300A1A9CA /* remotePolicyRemover */ = {
 			isa = PBXGroup;
 			children = (
+				B530AE2B241D366600C0457B /* Alert.swift */,
 				B5E1913C21B2308300A1A9CA /* AppDelegate.swift */,
 				B5E1913E21B2308300A1A9CA /* ViewController.swift */,
 				B5E1914021B2308700A1A9CA /* Assets.xcassets */,
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B530AE2C241D366600C0457B /* Alert.swift in Sources */,
 				B5E1913F21B2308300A1A9CA /* ViewController.swift in Sources */,
 				B5E1913D21B2308300A1A9CA /* AppDelegate.swift in Sources */,
 			);
@@ -279,7 +283,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = PS2F6S478M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = remotePolicyRemover/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -287,7 +291,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jamf.pse.remotePolicyRemover;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -302,7 +306,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = PS2F6S478M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = remotePolicyRemover/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -310,7 +314,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jamf.pse.remotePolicyRemover;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
