@@ -44,6 +44,10 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
     let userDefaults = UserDefaults.standard
     
     @IBAction func fetch_Button(_ sender: Any) {
+        if jamfServer_TextField.stringValue == "" || username_TextField.stringValue == "" || password_TextFiled.stringValue == "" {
+            Alert().display(header: "Attention:", message: "You must supply a server, username, and password.")
+            return
+        }
         remotePolicyCount = 0
         policyIdNamdDict.removeAll()
         remotePolicyCount_TextField.stringValue = ""
@@ -52,8 +56,8 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
         cutoffDate_TextField.stringValue        = ""
         oldestRemotePolicyEpoch                 = NSDate().timeIntervalSince1970
         
-        username = self.username_TextField.stringValue
-        password = self.password_TextFiled.stringValue
+        username = username_TextField.stringValue
+        password = password_TextFiled.stringValue
         
         userCreds = "\(username):\(password)"
         userBase64Creds = userCreds.data(using: .utf8)?.base64EncodedString() ?? ""
@@ -132,6 +136,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
         print("Getting \(endpoint)")
         theOpQ.maxConcurrentOperationCount = 1
         let semaphore = DispatchSemaphore(value: 0)
+        URLCache.shared.removeAllCachedResponses()
         
         self.serverURL = "\(self.jamfServer_TextField.stringValue)/JSSResource/\(endpoint)"
 //        print("initial URL: \(self.serverURL)\n")
@@ -148,7 +153,8 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
             let task = session.dataTask(with: request as URLRequest, completionHandler: {
                 (data, response, error) -> Void in
                 if let httpResponse = response as? HTTPURLResponse {
-//                    print("httpResponse: \(String(describing: response))")
+//                    print("httpResponse: \(String(describing: httpResponse))")
+//                    print("responseCode: \(httpResponse.statusCode)")
 
                     let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments)
                         if let endpointJSON = json as? [String: Any] {
@@ -205,18 +211,19 @@ class ViewController: NSViewController, NSTextFieldDelegate, URLSessionDelegate 
 //                        print("\n\n---------- response ----------")
 //                        print(httpResponse)
 //                        print("---------- response ----------\n\n")
-                        switch self.httpStatusCode {
+                        switch httpResponse.statusCode {
                         case 401:
                             Alert().display(header: "Authentication Failure", message: "Please verify username and password for the server.")
                         default:
-                            Alert().display(header: "Error", message: "The following error was returned: \(self.httpStatusCode).")
+                            self.theOpQ.cancelAllOperations()
+                            Alert().display(header: "Error", message: "The following error was returned: \(String(describing: httpResponse.statusCode)).")
                         }
                         
                         //                        401 - wrong username and/or password
                         //                        409 - unable to create object; already exists or data missing or xml error
                         //                        self.go_button.isEnabled = true
                         self.spinner.stopAnimation(self)
-                        return
+                        completion("")
                         
                     }   // if httpResponse/else - end
                 }   // if let httpResponse - end
